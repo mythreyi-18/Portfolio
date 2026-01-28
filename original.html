@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mythreyi.A - Frontend Developer</title>
+    <style>
+        :root {
+            --bg-color: #f8f9fa; --text-color: #333; --accent-color: #6366f1;
+            --header-bg: rgba(255,255,255,0.95); --shadow: 0 4px 20px rgba(0,0,0,0.1);
+        }
+        [data-theme="dark"] {
+            --bg-color: #1a1a1a; --text-color: #f8f9fa; --accent-color: #8b5cf6;
+            --header-bg: rgba(26,26,26,0.95);
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6; color: var(--text-color); background: var(--bg-color);
+            overflow-x: hidden; transition: all 0.3s ease;
+        }
+        
+        /* HEADER */
+        header {
+            position: sticky; top: 0; z-index: 1000; background: var(--header-bg);
+            backdrop-filter: blur(10px); padding: 1rem 0; box-shadow: var(--shadow);
+        }
+        nav {
+            max-width: 1400px; margin: 0 auto; display: flex;
+            justify-content: space-between; align-items: center; padding: 0 2rem;
+        }
+        .logo { font-size: 1.5rem; font-weight: bold; color: var(--accent-color); }
+        .nav-links { display: flex; list-style: none; gap: 2rem; }
+        .nav-links a {
+            text-decoration: none; color: var(--text-color); position: relative;
+            transition: color 0.3s; font-weight: 500;
+        }
+        .nav-links a:hover { color: var(--accent-color); }
+        .nav-links a::after {
+            content: ''; position: absolute; bottom: -5px; left: 0; width: 0;
+            height: 2px; background: var(--accent-color); transition: width 0.3s;
+        }
+        .nav-links a:hover::after { width: 100%; }
+        .theme-toggle {
+            background: none; border: 2px solid var(--accent-color); color: var(--accent-color);
+            padding: 0.5rem 1rem; border-radius: 20px; cursor: pointer; transition: all 0.3s;
+        }
+        .theme-toggle:hover { background: var(--accent-color); color: white; transform: scale(1.05); }
+
+        /* MAIN LAYOUT - STICKY SIDEBAR */
+        .main-container {
+            max-width: 1400px; margin: 0 auto; padding: 2rem; overflow: visible;
+        }
+        
+        /* LEFT SIDEBAR - NOW STICKY */
+        .left-sidebar {
+            width: 320px; position: sticky; top: 100px; height: fit-content;
+            background: rgba(255,255,255,0.8); backdrop-filter: blur(20px);
+            padding: 2.5rem 1.5rem; box-shadow: var(--shadow);
+            border-radius: 20px; float: left; margin-right: 2rem; z-index: 100;
+        }
+        .profile-name { 
+            font-size: 2rem; font-weight: bold; margin-bottom: 2rem; 
+            color: var(--accent-color); text-align: center; 
+        }
+        .profile-info {
+            text-align: center;
+        }
+        .profile-info div {
+            margin-bottom: 1.5rem; display: flex; align-items: center; gap: 1rem; 
+            font-size: 1.1rem;
+        }
+        .profile-info strong { color: var(--accent-color); min-width: 80px; }
+        .open-to-work {
+            background: linear-gradient(90deg, #10b981, #059669); color: white;
+            padding: 1rem 2rem; border-radius: 30px; font-weight: 700; font-size: 1.1rem;
+            margin-top: 1rem; display: block;
+        }
+        .clear { clear: both; }
+
+        /* RIGHT CONTENT */
+        .right-content { margin-left: 360px; min-height: 100vh; }
+        section { padding: 4rem 0; }
+        h2 {
+            font-size: 2.8rem; margin-bottom: 2rem; opacity: 0; transform: translateY(50px);
+            transition: all 0.8s; position: relative;
+        }
+        h2.visible { opacity: 1; transform: translateY(0); }
+        h2::after {
+            content: ''; position: absolute; bottom: -10px; left: 0; width: 50px; 
+            height: 3px; background: var(--accent-color); border-radius: 2px;
+        }
+
+        /* ABOUT PHOTO */
+        .about-photo {
+            width: 250px; height: 250px; border-radius: 20px; margin: 0 auto 2rem;
+            border: 5px solid white; box-shadow: 0 20px 60px rgba(0,0,0,0.2);
+            object-fit: cover; display: block; transition: transform 0.3s ease;
+            image-rendering: -webkit-optimize-contrast;
+        }
+        .about-photo:hover { transform: scale(1.05); }
+
+        /* HERO */
+        #hero {
+            height: 100vh; display: flex; flex-direction: column; justify-content: center;
+            align-items: center; text-align: center; 
+            background: linear-gradient(135deg, var(--accent-color), #4f46e5);
+            color: white; position: relative; overflow: hidden; margin-bottom: 5rem;
+            border-radius: 20px;
+        }
+        .floating-shapes { position: absolute; width: 100%; height: 100%; pointer-events: none; }
+        .shape {
+            position: absolute; background: rgba(255,255,255,0.1); border-radius: 50%;
+            animation: float 20s infinite linear;
+        }
+        .shape:nth-child(1) { width: 80px; height: 80px; top: 20%; left: 10%; animation-delay: 0s; }
+        .shape:nth-child(2) { width: 50px; height: 50px; top: 60%; right: 20%; animation-delay: -5s; }
+        .shape:nth-child(3) { width: 120px; height: 120px; bottom: 20%; left: 60%; animation-delay: -10s; }
+        @keyframes float { 0%, 100% { transform: translateY(0px) rotate(0deg); } 50% { transform: translateY(-20px) rotate(180deg); } }
+        .hero-text { opacity: 0; animation: textReveal 1.5s ease 0.5s forwards; max-width: 600px; }
+        @keyframes textReveal { 0% { opacity: 0; transform: scale(0.8) translateY(30px); } 100% { opacity: 1; transform: scale(1) translateY(0); } }
+        .hero-role { font-size: 2rem; margin: 1rem 0; font-weight: 300; }
+
+        /* ABOUT TEXT */
+        .about-content {
+            text-align: center; max-width: 700px; margin: 0 auto;
+        }
+        .about-header {
+            font-size: 3rem; font-weight: bold; margin-bottom: 1rem; color: var(--accent-color);
+        }
+        .about-role { font-size: 1.5rem; color: #666; margin-bottom: 1.5rem; }
+        .about-tagline { 
+            font-size: 1.8rem; font-weight: 300; margin-bottom: 2rem; 
+            color: var(--accent-color); font-style: italic;
+        }
+        .about-bio {
+            font-size: 1.3rem; line-height: 1.8; text-align: justify;
+        }
+
+        /* SKILLS */
+        .skills-grid {
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2rem;
+        }
+        .skill-card {
+            background: rgba(255,255,255,0.8); padding: 2rem; border-radius: 20px;
+            backdrop-filter: blur(10px); box-shadow: var(--shadow); transition: transform 0.3s;
+            border: 1px solid rgba(255,255,255,0.2);
+        }
+        .skill-card:hover { transform: translateY(-10px); }
+
+        /* GALLERY - 4 IMAGES */
+        .gallery { 
+            display: grid; 
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); 
+            gap: 1.5rem; 
+        }
+        .gallery-item {
+            position: relative; overflow: hidden; border-radius: 20px; box-shadow: var(--shadow);
+            cursor: pointer; transition: all 0.4s;
+        }
+        .gallery-item img {
+            width: 100%; height: 250px; object-fit: cover; 
+            image-rendering: -webkit-optimize-contrast;
+            transition: transform 0.5s;
+        }
+        .gallery-item:hover { transform: scale(1.03); box-shadow: 0 20px 40px rgba(0,0,0,0.2); }
+        .gallery-item:hover img { transform: scale(1.1); }
+
+        /* CONTACT */
+        .contact-content {
+            max-width: 600px; margin: 0 auto; text-align: center; padding: 2rem;
+            background: rgba(255,255,255,0.8); border-radius: 20px; backdrop-filter: blur(10px);
+            box-shadow: var(--shadow);
+        }
+        .contact-details {
+            font-size: 1.3rem; margin: 2rem 0;
+        }
+        .contact-details div {
+            margin-bottom: 1rem; font-weight: 500;
+        }
+        .contact-details a {
+            color: var(--accent-color); text-decoration: none; font-size: 1.2rem;
+        }
+        .contact-details a:hover {
+            text-decoration: underline;
+        }
+        .resume-btn {
+            display: inline-block; background: var(--accent-color); color: white;
+            padding: 1.2rem 2.5rem; border-radius: 50px; text-decoration: none;
+            font-weight: 700; font-size: 1.1rem; transition: all 0.3s;
+            box-shadow: var(--shadow); margin-top: 1rem;
+        }
+        .resume-btn:hover { transform: translateY(-3px); box-shadow: 0 15px 30px rgba(99,102,241,0.4); }
+
+        /* LIGHTBOX */
+        .lightbox {
+            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.95); z-index: 2000; justify-content: center; align-items: center;
+        }
+        .lightbox.active { display: flex; }
+        .lightbox img { max-width: 90%; max-height: 90%; border-radius: 15px; image-rendering: auto; }
+
+        /* RESPONSIVE */
+        @media (max-width: 1100px) {
+            .left-sidebar { 
+                position: static; float: none; width: 100%; margin: 0 0 2rem 0; 
+            }
+            .right-content { margin-left: 0; }
+            .nav-links { display: none; }
+        }
+        @media (max-width: 768px) {
+            .main-container { padding: 1rem; }
+            section { padding: 2rem 0; } h2 { font-size: 2rem; }
+            .about-photo { width: 200px; height: 200px; }
+            .about-header { font-size: 2.2rem; }
+            .gallery { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <nav>
+            <div class="logo">Portfolio</div>
+            <ul class="nav-links">
+                <li><a href="#hero">Home</a></li>
+                <li><a href="#about">About</a></li>
+                <li><a href="#skills">Skills</a></li>
+                <li><a href="#gallery">Gallery</a></li>
+                <li><a href="#contact">Contact</a></li>
+            </ul>
+            <button class="theme-toggle" onclick="toggleTheme()">🌙</button>
+        </nav>
+    </header>
+
+    <div class="main-container">
+        <!-- LEFT SIDEBAR - STICKY -->
+        <div class="left-sidebar">
+            <div class="profile-name">Mythreyi.A</div>
+            <div class="profile-info">
+                <div><strong>📧 Email:</strong> mythreyi.a18@gmail.com</div>
+                <div><strong>📍 Location:</strong> Kurnool, AP</div>
+                <div><strong>💼 Role:</strong> Frontend Developer</div>
+                <span class="open-to-work">🟢 Open to Work</span>
+            </div>
+            <div class="clear"></div>
+        </div>
+
+        <!-- RIGHT CONTENT -->
+        <div class="right-content">
+            <!-- HERO -->
+            <section id="hero">
+                <div class="floating-shapes">
+                    <div class="shape"></div><div class="shape"></div><div class="shape"></div>
+                </div>
+                <div class="hero-text">
+                    <h1>Mythreyi.A</h1>
+                    <p class="hero-role">Frontend Developer</p>
+                </div>
+            </section>
+
+            <!-- ABOUT -->
+            <section id="about">
+                <h2>About Me</h2>
+                <!-- ✅ FIXED RAW GITHUB URL -->
+                <img src="image.jpeg" alt="Mythreyi.A" class="about-photo">
+                <div class="about-content">
+                    <div class="about-header">Mythreyi.A</div>
+                    <div class="about-role">Frontend Developer</div>
+                    <div class="about-tagline">Turning ideas into interactive Experiences</div>
+                    <p class="about-bio">
+                        A student who loves Frontend Development, enjoys creating interactive and user-friendly websites, 
+                        and turning ideas into real projects.
+                    </p>
+                </div>
+            </section>
+
+            <!-- SKILLS -->
+            <section id="skills">
+                <h2>Skills</h2>
+                <div class="skills-grid">
+                    <div class="skill-card">
+                        <h3>Technical Skills</h3>
+                        <p>Java, Frontend Development, Machine Learning, Python</p>
+                    </div>
+                    <div class="skill-card">
+                        <h3>Languages Known</h3>
+                        <p>English, Telugu, Hindi</p>
+                    </div>
+                    <div class="skill-card">
+                        <h3>Interests</h3>
+                        <p>Designing simple web pages, Exploring the world, Listening to music</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- GALLERY - 4 IMAGES WITH RAW URLS -->
+            <section id="gallery">
+                <h2>Gallery</h2>
+                <p style="text-align: center; margin-bottom: 3rem; font-size: 1.2rem;">Interests</p>
+                <div class="gallery">
+                    <!-- ✅ ALL FIXED RAW GITHUB URLS -->
+                    <div class="gallery-item" onclick="openLightbox('java.jpg')">
+                        <img src="java.png" alt="Interest 1">
+                    </div>
+                    <div class="gallery-item" onclick="openLightbox('g2.png')">
+                        <img src="g2.png" alt="Interest 2">
+                    </div>
+                    <div class="gallery-item" onclick="openLightbox('cad.png')">
+                        <img src="cad.png" alt="Interest 3">
+                    </div>
+                    <div class="gallery-item" onclick="openLightbox('g1.png')">
+                        <img src="g1.png" alt="Interest 4">
+                    </div>
+                </div>
+            </section>
+
+            <!-- CONTACT -->
+            <section id="contact">
+                <h2>Contact</h2>
+                <div class="contact-content">
+                    <p style="font-size: 1.2rem; margin-bottom: 2rem;">
+                        Ready for new opportunities and exciting projects!
+                    </p>
+                    <div class="contact-details">
+                        <div><a href="mailto:mythreyi.a18@gmail.com">📧 mythreyi.a18@gmail.com</a></div>
+                        <div><a href="tel:+9182767649">📱 +91 82767 6492</a></div>
+                    </div>
+                    <a href="22AT1A3105 Mythreyi.pdf" 
+                       class="resume-btn" download="Mythreyi.A-Resume.pdf">
+                        📄 Download Resume
+                    </a>
+                </div>
+            </section>
+        </div>
+    </div>
+
+    <div id="lightbox" class="lightbox" onclick="closeLightbox()">
+        <img id="lightbox-img" src="" alt="">
+    </div>
+
+    <script>
+        document.querySelectorAll('a[href^="#"]').forEach(a => {
+            a.addEventListener('click', e => {
+                e.preventDefault();
+                document.querySelector(a.getAttribute('href')).scrollIntoView({ behavior: 'smooth' });
+            });
+        });
+        const observer = new IntersectionObserver(entries => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) entry.target.querySelector('h2')?.classList.add('visible');
+            });
+        });
+        document.querySelectorAll('section').forEach(s => observer.observe(s));
+        
+        function toggleTheme() {
+            document.body.dataset.theme = document.body.dataset.theme === 'dark' ? '' : 'dark';
+            document.querySelector('.theme-toggle').textContent = document.body.dataset.theme === 'dark' ? '☀️' : '🌙';
+        }
+        
+        function openLightbox(src) {
+            document.getElementById('lightbox').classList.add('active');
+            document.getElementById('lightbox-img').src = src;
+        }
+        function closeLightbox() { 
+            document.getElementById('lightbox').classList.remove('active'); 
+        }
+        
+        document.querySelectorAll('button, .resume-btn').forEach(el => {
+            el.addEventListener('mousedown', () => el.style.transform = 'scale(0.97)');
+            el.addEventListener('mouseup mouseleave', () => el.style.transform = '');
+        });
+    </script>
+</body>
+</html>
